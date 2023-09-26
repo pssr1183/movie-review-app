@@ -66,10 +66,6 @@ def predict():
     train_padded = pad_sequences(train_sequences, maxlen=max_sequence_length, padding='post', truncating='post')
     test_padded = pad_sequences(test_sequences, maxlen=max_sequence_length, padding='post', truncating='post')
 
-    
-
-    # ... (previous code for loading data and preprocessing)
-
     # Convert labels to float32
     train_labels = train_labels.astype(np.float32)
     test_labels = test_labels.astype(np.float32)
