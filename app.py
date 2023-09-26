@@ -18,12 +18,8 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-
 # Load the sentiment analysis model
-
 # Tokenizer for text preprocessing
-
-
 @app.route('/')
 def home():
     return render_template('home.html', output='')
@@ -31,58 +27,24 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     # Get the movie review from the form
-    
-
-    # Tokenize and pad the input text
-
-    # Predict the sentiment
-    #load data set
-
-    # Load the dataset
-    data = pd.read_csv("IMDB Dataset.csv")
-
-    # Preprocessing
-    data['review'] = data['review'].str.replace('<.*?>', '', regex=True)  # Remove HTML tags
-    data['review'] = data['review'].str.replace('[^\w\s]', '')  # Remove punctuation
-    data['review'] = data['review'].str.lower()  # Convert to lowercase
-
-    # Split the dataset into train and test sets
-    train_data, test_data, train_labels, test_labels = train_test_split(data['review'], data['sentiment'], test_size=0.2, random_state=42)
-    # Convert labels to numerical values
-    train_labels = train_labels.apply(lambda x: 0 if x == 'negative' else 1)
-    test_labels = test_labels.apply(lambda x: 0 if x == 'negative' else 1)
     max_words = 10000
     tokenizer = Tokenizer(num_words=max_words, oov_token="<OOV>")
     max_sequence_length = 200
-    tokenizer.fit_on_texts(train_data)
-
-    # Convert text to sequences
-    train_sequences = tokenizer.texts_to_sequences(train_data)
-    test_sequences = tokenizer.texts_to_sequences(test_data)
-
-    
-    # Padding sequences
-    max_sequence_length = 200
-    train_padded = pad_sequences(train_sequences, maxlen=max_sequence_length, padding='post', truncating='post')
-    test_padded = pad_sequences(test_sequences, maxlen=max_sequence_length, padding='post', truncating='post')
-
-    # Convert labels to float32
-    train_labels = train_labels.astype(np.float32)
-    test_labels = test_labels.astype(np.float32)
-    
     model= tf.keras.models.load_model("mymodel.h5")
-  
+    from tensorflow.keras.preprocessing.text import tokenizer_from_json
+    with open('tokenizer_config.json', 'r', encoding='utf-8') as json_file:
+        loaded_tokenizer_json = json_file.read()
 
+    # Create a new tokenizer from the loaded JSON configuration
+    loaded_tokenizer = tokenizer_from_json(loaded_tokenizer_json)
+# Use the loaded tokenizer for tokenization
     # Threshold to classify reviews as positive or negative
     threshold = 0.4
-    negation_words = ["not", "didn't", "isn't", "aren't", "no"]
     request_data = request.get_json()
     reviews = request_data.get('reviews')
     print(reviews)
-    
-
 # Predict sentiment for the movie reviews with negation handling
-    movie_sequences = tokenizer.texts_to_sequences(reviews)
+    movie_sequences = loaded_tokenizer.texts_to_sequences(reviews)
     movie_padded = pad_sequences(movie_sequences, maxlen=max_sequence_length, padding='post', truncating='post')
     predictions = model.predict(movie_padded)
 
@@ -100,14 +62,11 @@ def predict():
     for review, sentiment in zip(reviews, predictions):
         sentiment_label = 'Positive' if sentiment >= threshold else 'Negative'
         print(f"Review: {review}\nSentiment: {sentiment_label}\n")
-
     print("Average Sentiment:", average_sentiment)
     print("Rating:", rating, "/5")
-    # Set the output variable
-    # output = f'The rating of the movie is {rating}'
     response_data = {'rating': rating}
     return jsonify(response_data)
-    # return render_template('home.html', output=output)
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
