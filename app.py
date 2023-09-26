@@ -20,9 +20,6 @@ CORS(app)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 # Load the sentiment analysis model
 # Tokenizer for text preprocessing
-@app.route('/')
-def home():
-    return render_template('home.html', output='')
 
 @app.route('/predict', methods=['POST'])
 def predict():
