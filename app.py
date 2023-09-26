@@ -15,7 +15,7 @@ from tensorflow.keras.layers import Embedding
 
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 # Load the sentiment analysis model
