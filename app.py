@@ -66,24 +66,6 @@ def predict():
     train_padded = pad_sequences(train_sequences, maxlen=max_sequence_length, padding='post', truncating='post')
     test_padded = pad_sequences(test_sequences, maxlen=max_sequence_length, padding='post', truncating='post')
 
-    # Load pre-trained word embeddings (GloVe)
-    embedding_dim = 100
-    embeddings_index = {}
-    with open('glove.6B.100d.txt', encoding='utf-8') as f:
-        for line in f:
-            values = line.split()
-            word = values[0]
-            coefs = np.asarray(values[1:], dtype='float32')
-            embeddings_index[word] = coefs
-
-    # Create embedding matrix
-    embedding_matrix = np.zeros((max_words, embedding_dim))
-    for word, i in tokenizer.word_index.items():
-        if i < max_words:
-            embedding_vector = embeddings_index.get(word)
-            if embedding_vector is not None:
-                embedding_matrix[i] = embedding_vector
-
     
 
     # ... (previous code for loading data and preprocessing)
