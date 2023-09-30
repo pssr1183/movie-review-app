@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:22a2d0f668fc2d7447d4b7d12a5e132b7012cd765ed7aac0211332aeec867dc1
-size 257
+Flask
+Flask-Cors==4.0.0
+gunicorn==21.2.0
+h5py
+joblib
+keras
+numpy
+pandas
+requests
+scikit-learn
+scipy
+tensorboard
+tensorboard-data-server
+tensorflow
+tensorflow-estimator
+tensorflow-intel
+tensorflow-io-gcs-filesystem
